@@ -122,7 +122,7 @@ public class Taquin {
 		return ((nbDeplacement%2)==0);
 	}
 	/**
-	 * cette méthode permet de retrouver une case du jeu de taquin grâce a sa position 
+	 * cette méthode permet de retrouver une case du jeu de taquin grâce a sa valeur
 	 * dans le jeu
 	 * @param position : position dans le jeu de la case à trouver (pour plus de précision sur 
 	 * la position d'une case voir la class Case)
@@ -133,6 +133,17 @@ public class Taquin {
 		for (int i=0 ; i<hauteur ; i++){
 			for (int j=0 ; j<largeur; j++){
 				if(grille[i][j].valeur==position){
+					aTrouver = grille[i][j];
+				}
+			}
+		}
+		return aTrouver;
+	}
+	public Case retrouverParValeur (int valeur){
+		Case aTrouver = new Case();
+		for (int i=0 ; i<hauteur ; i++){
+			for (int j=0 ; j<largeur; j++){
+				if(grille[i][j].position==valeur){
 					aTrouver = grille[i][j];
 				}
 			}
@@ -357,5 +368,23 @@ public class Taquin {
 		}
 		return Suivants;
 	}
+	/**
+	 * Calcul la distance de manhattan du jeu de taquin qui vaut la somme des distances de
+	 * Manhattan de toute les cases du jeu 
+	 * @return distance de Manhattan de la position du jeu de taquin qui appel la méthode
+	 */
+	public int distanceDeManhattan (){
+		int distanceDeManhattan = 0;
+		for (int i = 0 ; i < hauteur ; i++){
+			for (int j=0 ; j<largeur ; j++){
+				if ((grille[i][j]!=null)&&(grille[i][j].position!=grille[i][j].valeur)){
+					Case aAtteindre = this.retrouverParValeur(grille[i][j].valeur);
+					distanceDeManhattan += Math.abs(grille[i][j].hauteur-aAtteindre.hauteur)+Math.abs(grille[i][j].largeur-aAtteindre.largeur);
+				}
+			}
+		}
+		return distanceDeManhattan;
+	}
+	
 	
 }	

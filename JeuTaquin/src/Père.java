@@ -12,4 +12,8 @@ public class Père {
 		this.position = position;
 		this.mouvement = mouvement;
 	}
+	public String toString (){
+		String s= ""+position+"\n"+mouvement;
+		return s;
+	}
 }

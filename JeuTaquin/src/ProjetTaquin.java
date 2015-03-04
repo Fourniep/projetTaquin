@@ -9,13 +9,14 @@ public class ProjetTaquin {
 	 * @param algo structure de la donnée utilisé pour la résolution
 	 * @throws Exception 
 	 */
-	public static void Solution (String fichier , String delai , String algo) throws Exception{
+	public static void Solution (String fichier , String delai , String algo) throws NonSolvableException , IOException , Exception{
 		Taquin taquin = new Taquin (fichier);
 			if (!taquin.solvable()){
-				System.out.println("Pas de solution");
+				throw new NonSolvableException ("Pas de solution !");
 			}else{
 				int delaiConverti = Integer.parseInt(delai);
 				Graphe  graphe = new Graphe (taquin,delaiConverti,algo);
+				graphe.afficherSolution();
 			}	
 		
 	}

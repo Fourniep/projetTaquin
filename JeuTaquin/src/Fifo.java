@@ -55,8 +55,14 @@ public class Fifo implements Atraité {
 	}
 	/**
 	 * retourne le dernier maillon ajouté à la file sans le retirer de la structure
+	 * il est logiquement la position de victoire dans notre utilisation 
 	 */
-	public Maillon dernierAjout (){
-		return queue ;
+	public Taquin positionVictoire () throws Exception{
+		Maillon victoire = queue ;
+		if (!victoire.position.testVictoire()){
+			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
+		}else{
+			return victoire.position;
+		}
 	}
 }

@@ -51,16 +51,22 @@ public class Pile implements Atraité {
 		String s = "";
 		Maillon pointeur = sommet ;
 		while (pointeur != null){
-			s+= "\n"+pointeur ;
+			s+= "\n"+pointeur.position ;
 			pointeur = pointeur.suivant;
 		}
 		return s;
 	}
 	/**
 	 * retourne le dernier maillon ajouter sans le retirer de la structure
+	 * il est logiquement notre position de victoire dans notre utilisation
 	 */
-	public Maillon dernierAjout (){
-		return sommet;
+	public Taquin positionVictoire () throws Exception{
+		Maillon victoire = sommet;
+		if (!victoire.position.testVictoire()){
+			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
+		}else{
+			return victoire.position;
+		}
 	}
 	
 }
