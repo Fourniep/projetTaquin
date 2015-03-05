@@ -18,8 +18,8 @@ public class Fifo implements Atraité {
 	/**
 	 * ajoute un maillon à la file
 	 */
-	public void ajouterMaillon(Taquin taquin){
-		Maillon aEnfiler = new Maillon (taquin);
+	public void ajouterMaillon(Taquin taquin,int profondeur){
+		Maillon aEnfiler = new Maillon (taquin,profondeur);
 		if (this.estVide()){
 			tête = aEnfiler;
 			queue = aEnfiler;
@@ -53,12 +53,15 @@ public class Fifo implements Atraité {
 			
 		}
 	}
+	public Maillon maillonVictoire (){
+		return queue;
+	}
 	/**
-	 * retourne le dernier maillon ajouté à la file sans le retirer de la structure
+	 * retourne le dernier maillon ajouté à la structure sans le retirer de la structure
 	 * il est logiquement la position de victoire dans notre utilisation 
 	 */
 	public Taquin positionVictoire () throws Exception{
-		Maillon victoire = queue ;
+		Maillon victoire = maillonVictoire() ;
 		if (!victoire.position.testVictoire()){
 			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
 		}else{

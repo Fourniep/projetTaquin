@@ -1,4 +1,4 @@
-import java.util.*;
+
 public class Pile implements Atraité {
 	Maillon sommet; // dernier maillon ajouté et le prochain a être traité (principe FIFO)
 	/**
@@ -29,8 +29,8 @@ public class Pile implements Atraité {
 	/**
 	 * ajoute une position du jeu de taquin à sommet de la pile
 	 */
-	public void ajouterMaillon (Taquin taquin){
-		Maillon aEmpiler = new Maillon (taquin);
+	public void ajouterMaillon (Taquin taquin,int profondeur){
+		Maillon aEmpiler = new Maillon (taquin,profondeur);
 		if (this.estVide()){
 			sommet = aEmpiler;
 		}else{
@@ -56,12 +56,15 @@ public class Pile implements Atraité {
 		}
 		return s;
 	}
+	public Maillon maillonVictoire () {
+		return sommet;
+	}
 	/**
 	 * retourne le dernier maillon ajouter sans le retirer de la structure
 	 * il est logiquement notre position de victoire dans notre utilisation
 	 */
 	public Taquin positionVictoire () throws Exception{
-		Maillon victoire = sommet;
+		Maillon victoire = this.maillonVictoire();
 		if (!victoire.position.testVictoire()){
 			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
 		}else{

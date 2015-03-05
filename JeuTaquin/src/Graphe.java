@@ -7,7 +7,9 @@ public class Graphe {
 	HashMap<Taquin,Père> Marqué; // double fonction ! : 1) test si une position a déjà été exploré
 	// 2) joue le rôle de tableau des père
 	Atraité atraité; // structure qui gère les maillon en attente de traitement
-	long stats ;
+	long tempsExecution ; // temps d'éxécution pour le parcourt 
+	int nbPositionsParcourus ; // nbDePositionsParcouru lors du parcourt
+	int nbCoups ; // nbCoups joué pour arrivé a la solution 
 	/**
 	 * Constructeur de graphe
 	 * @param initial la position de départ du jeu de taquin donné par le fichier
@@ -27,62 +29,62 @@ public class Graphe {
 			break;
 		case "pmanhattan":
 			atraité = new tasManhattanProfondeur();
+			break;
+		default:
+			throw new Exception ("Structure pour Atraité non indentifié");
 		}
 		 long temps; 
          long start= System.currentTimeMillis();
         Marqué = new HashMap<Taquin,Père>();
 		Marqué.put(initial,null);
-		atraité.ajouterMaillon(initial);
+		atraité.ajouterMaillon(initial,0);
 		boolean solution = false;
 		while ((!atraité.estVide())&&(!solution)){
 			temps= System.currentTimeMillis()-start;
 			 if(temps>=delai){ 
                  System.exit(0);// stoppe l'éxécution du programme si le temps  d'éxécution devient supérieur au délai imposé
 			 }
-			Taquin enTraitement = atraité.retirerMaillon().position;
+			Maillon ET = atraité.retirerMaillon();
+			Taquin enTraitement = ET.position;
 			ArrayList<Successeur> successeurs = enTraitement.positionsSuivantes();
 			Iterator<Successeur> it = successeurs.iterator();
 			while ((it.hasNext())&&(!solution)){
 				Successeur successeurEnTraitement = it.next();
 				if (!Marqué.containsKey(successeurEnTraitement.position)){
 					Marqué.put(successeurEnTraitement.position, new Père (enTraitement , successeurEnTraitement.mouvement ));
-					atraité.ajouterMaillon(successeurEnTraitement.position);
+					atraité.ajouterMaillon(successeurEnTraitement.position,ET.profondeur+1);
 					solution = successeurEnTraitement.position.testVictoire();
 				}
 			}
 		}
-		stats = System.currentTimeMillis()-start;
+		nbPositionsParcourus = Marqué.size();
+		tempsExecution = System.currentTimeMillis()-start;
+		nbCoups = atraité.maillonVictoire().profondeur;
 		if (!solution){
 			throw new Exception ("Pas de solution trouvé");
 		}
 	}
+	/**
+	 * affiche la solution dans le terminal
+	 * @throws Exception
+	 */
 	public void afficherSolution ()throws Exception{
-		Pile résolution = new Pile();
-		résolution.ajouterMaillon(this.atraité.positionVictoire());
-		while (Marqué.get(résolution.sommet.position)!=null){
-			résolution.ajouterMaillon(Marqué.get(résolution.sommet.position).position);
+		ArrayList<Taquin> résolution = new ArrayList<Taquin>();
+		Taquin enTraitement = this.atraité.positionVictoire();
+		résolution.add(enTraitement);
+		Père pèreNoeudEnTraitement = Marqué.get(enTraitement);
+		while (pèreNoeudEnTraitement!=null){
+			résolution.add(pèreNoeudEnTraitement.position);
+			enTraitement = résolution.get(résolution.size()-1);
+			pèreNoeudEnTraitement = Marqué.get(enTraitement);
 		}
-		while (!résolution.estVide()){
-			Maillon enTraitement = résolution.retirerMaillon();
-			if (Marqué.get(enTraitement.position)!=null){
-				System.out.println(Marqué.get(enTraitement.position).mouvement);
+		for (int i=résolution.size()-1;i>=0 ; i--){
+			Taquin aAfficher = résolution.get(i);
+			if (Marqué.get(aAfficher)!=null){
+				System.out.println(Marqué.get(aAfficher).mouvement);
 			}
-			System.out.println(enTraitement.position);
+			System.out.println(aAfficher);
 		}
 	}
-	/*/**
-	 * en partant d'un graphe qui a trouvé la position de solution retourne une pile contenant
-	 * les positions succesives permettant d'y parvenir
-	 * @return pile contenant les étapes permettant de parvenir à la solution
-	 */
-	/*public Pile Solution ()throws Exception{
-		Pile solution = new Pile ();
-		Taquin next = atraité.positionVictoire().position;
-		solution.ajouterMaillon(next);
-		while (Marqué.get(next)!= null){
-			next = Marqué.get(next).position;
-			solution.ajouterMaillon(next);
-		}
-		return solution;
-	}*/
+	
 }

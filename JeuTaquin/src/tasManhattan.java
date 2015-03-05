@@ -17,22 +17,25 @@ public class tasManhattan implements Atraité {
 	/**
 	 * ajoute une position du jeu de taquin à sommet de la pile
 	 */
-	public void ajouterMaillon(Taquin taquin){
-		MaillonManhattan ajouter = new MaillonManhattan (taquin);
+	public void ajouterMaillon(Taquin taquin,int profondeur){
+		MaillonManhattan ajouter = new MaillonManhattan (taquin,profondeur);
 		tas.add(ajouter);
 	}
 	/**
-	 * test si la pile est vide
+	 * test si la structure est vide
 	 */
 	public boolean estVide(){
 		return tas.size()==0 ;
 	}
+	public Maillon maillonVictoire (){
+		return tas.peek();
+	}
 	/**
-	 * retourne le dernier maillon ajouté à la file sans le retirer de la structure
+	 * retourne le dernier maillon ajouté à la structure sans le retirer de la structure
 	 * il est logiquement la position de victoire dans notre utilisation 
 	 */
 	public Taquin positionVictoire() throws Exception{
-		Maillon victoire =  tas.peek();
+		Maillon victoire =  this.maillonVictoire();
 		if (!victoire.position.testVictoire()){
 			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
 		}else{

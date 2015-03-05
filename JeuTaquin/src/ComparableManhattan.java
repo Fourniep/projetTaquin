@@ -1,7 +1,8 @@
 import java.util.*;
 public class ComparableManhattan implements Comparator<MaillonManhattan> {
 	/**
-	 * méthode de comparaison de deux maillonManhattan pour l'utilisation de la file à priorité
+	 * méthode de comparaison de deux maillonManhattan par leur distance de Manhattan
+	 * pour l'utilisation de la file à priorité
 	 */
 	public int compare (MaillonManhattan taquin1 , MaillonManhattan taquin2){
 		if (taquin1.distanceManhattan < taquin2.distanceManhattan){
