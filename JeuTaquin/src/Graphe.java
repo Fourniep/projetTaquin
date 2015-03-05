@@ -42,7 +42,7 @@ public class Graphe {
 		while ((!atraité.estVide())&&(!solution)){
 			temps= System.currentTimeMillis()-start;
 			 if(temps>=delai){ 
-                 System.exit(0);// stoppe l'éxécution du programme si le temps  d'éxécution devient supérieur au délai imposé
+                 throw new DelaiExecutionException("Délai d'éxécution dépassé");// stoppe l'éxécution du programme si le temps  d'éxécution devient supérieur au délai imposé
 			 }
 			Maillon ET = atraité.retirerMaillon();
 			Taquin enTraitement = ET.position;
@@ -59,32 +59,38 @@ public class Graphe {
 		}
 		nbPositionsParcourus = Marqué.size();
 		tempsExecution = System.currentTimeMillis()-start;
+		
 		nbCoups = atraité.maillonVictoire().profondeur;
 		if (!solution){
 			throw new Exception ("Pas de solution trouvé");
 		}
 	}
 	/**
-	 * affiche la solution dans le terminal
+	 * récupère la solution sous forme d'ArrayList
 	 * @throws Exception
 	 */
-	public void afficherSolution ()throws Exception{
+	public ArrayList<Taquin> récupererSolution () throws Exception{
 		ArrayList<Taquin> résolution = new ArrayList<Taquin>();
 		Taquin enTraitement = this.atraité.positionVictoire();
-		résolution.add(enTraitement);
+		résolution.add(0,enTraitement);
 		Père pèreNoeudEnTraitement = Marqué.get(enTraitement);
 		while (pèreNoeudEnTraitement!=null){
-			résolution.add(pèreNoeudEnTraitement.position);
-			enTraitement = résolution.get(résolution.size()-1);
+			résolution.add(0,pèreNoeudEnTraitement.position);
+			enTraitement = résolution.get(0);
 			pèreNoeudEnTraitement = Marqué.get(enTraitement);
 		}
-		for (int i=résolution.size()-1;i>=0 ; i--){
+		return résolution;
+		
+	}
+	public void afficherSolution () throws Exception{
+		ArrayList<Taquin> résolution = this.récupererSolution();
+		for (int i=0;i<résolution.size() ; i++){
 			Taquin aAfficher = résolution.get(i);
 			if (Marqué.get(aAfficher)!=null){
 				System.out.println(Marqué.get(aAfficher).mouvement);
 			}
 			System.out.println(aAfficher);
 		}
-	}
+	}	
 	
 }

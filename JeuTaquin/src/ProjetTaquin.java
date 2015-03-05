@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 public class ProjetTaquin {
 	
@@ -49,9 +49,46 @@ public class ProjetTaquin {
 		sc.close();
 		
 	}
-	public static void afficherStatsHTML (String[][] stats){
-		
-	}
+	public static void afficherStatsHTML (String[][] stats)throws IOException{
+		File f = new File ("Stats.php");
+		f.delete();
+		FileWriter fw = new FileWriter(f);
+		fw.write("<?php $pile=true;$file=true;$manhattan=true;$pmanhattan=true;");
+		Scanner sc;
+		int temps=0;
+		for(int i=0; i<stats.length;i++){
+			sc = new Scanner(stats[i][1]);
+			if(stats[i][1].equals("Délai d'éxécution dépassé")){
+				fw.write("$Taille"+i+"=null;");
+				fw.write("$Nombre"+i+"=null;");
+				fw.write("$H"+i+"=null;");
+				fw.write("$M"+i+"=null;");
+				fw.write("$S"+i+"=null;");
+				fw.write("$MS"+i+"=null;");
+				
+			}else{
+				fw.write("$Taille"+i+"="+sc.next()+";");
+				fw.write("$Nombre"+i+"="+sc.next()+";");
+				temps=Integer.parseInt(sc.next());
+				int ms = temps%1000;
+				temps = temps/1000;
+				int s = temps%60;
+				temps = temps/60;
+				int m = temps%60;
+				int h = temps/60;
+				fw.write("$H"+i+"="+h+";");
+				temps=temps/1000;
+				fw.write("$M"+i+"="+m+";");
+				temps=temps/60;
+				fw.write("$S"+i+"="+s+";");
+				temps=temps/60;
+				fw.write("$MS"+i+"="+ms+";");
+			}
+			sc.close();
+		}
+		fw.write("?>");
+		fw.close();
+		}
 	/**
 	 * méthode qui test la solvabilité du jeu de taquin créé a partir du fichier donnée
 	 * en paramètre
@@ -158,8 +195,12 @@ public class ProjetTaquin {
 					while (it.hasNext()){
 						String algoAjouté = it.next();
 						tableauxStats[positionTableaux][0]= algoAjouté;
-						Graphe algoEnTraitement = ParcourtDuGraphe (args[1],algoAjouté,args[2]);
-						tableauxStats[positionTableaux][1]= récupérerStats(algoEnTraitement);
+						try {	
+							Graphe algoEnTraitement = ParcourtDuGraphe (args[1],algoAjouté,args[2]);
+							tableauxStats[positionTableaux][1]= récupérerStats(algoEnTraitement);
+						}catch(DelaiExecutionException dee){
+							tableauxStats[positionTableaux][1] = ""+dee;
+						}
 						positionTableaux ++;
 					}
 					afficherStatsHTML(tableauxStats);
