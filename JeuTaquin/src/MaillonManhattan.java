@@ -5,8 +5,12 @@ public class MaillonManhattan extends Maillon {
 	 * Constructeur de MaillonManhattan , c'est un maillon classique enrichi d'un champ distance Manhattan décrit plus haut
 	 * @param taquin
 	 */
-	public MaillonManhattan (Taquin taquin,int profondeur){
-		super(taquin,profondeur);
+	public MaillonManhattan (Taquin taquin){
+		super(taquin);
 		distanceManhattan = taquin.distanceDeManhattan();
+	}
+	public MaillonManhattan (Successeur successeur , String chemin){
+		super(successeur,chemin);
+		distanceManhattan = successeur.position.distanceDeManhattan();
 	}
 }

@@ -49,6 +49,11 @@ public class ProjetTaquin {
 		sc.close();
 		
 	}
+	/**
+	 * remplit le fichier HTML contenant les stats
+	 * @param stats fichiers contenant les info a reporter dans le fichier
+	 * @throws IOException assure que l'écriture du fichier se fait correctement
+	 */
 	public static void afficherStatsHTML (String[][] stats)throws IOException{
 		File f = new File ("Stats.php");
 		f.delete();
@@ -135,7 +140,7 @@ public class ProjetTaquin {
 		}
 	}
 	public static void main (String [] args){
-		ArrayList<String> algo = new ArrayList<String> ();
+		ArrayList<String> algo = new ArrayList<String> (); // on ajoute nos algo ici
 		algo.add("pile");
 		algo.add("file");
 		algo.add("manhattan");

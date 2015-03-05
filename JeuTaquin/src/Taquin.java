@@ -168,15 +168,14 @@ public class Taquin {
 	 * @return vrai si la position est gagnante / faux sinon
 	 */
 	public boolean testVictoire (){
-		boolean test = true;
 		for (int i=0 ; i<hauteur ; i++){
 			for (int j=0 ; j <largeur ; j++){
 				if((grille[i][j]!= null)&&(grille[i][j].valeur != grille[i][j].position )){
-					test = false;
+					return false;
 				}
 			}
 		}
-		return test;
+		return true;
 	}
 	/**
 	 * donne les coups jouables depuis une position du jeu de taquin
@@ -268,6 +267,26 @@ public class Taquin {
 		case ("Bas"):
 			this.permutation(this.grille[this.vide.hauteur+1][this.vide.largeur]);
 			break;	
+		}
+	}
+	/**
+	 * effectue une permutation sur le jeu de taquin relativement au caractère entré en paramètre
+	 * @param choixCase première lettre de la direction dans laquel on se dirige
+	 */
+	public void permutation (char choixCase){
+		switch(choixCase){
+		case ('D'):
+			this.permutation("Droite");
+		    break;
+		case ('G'):
+			this.permutation("Gauche");
+			break;
+		case ('H'):
+			this.permutation("Haut");
+			break;
+		case ('B'):
+			this.permutation("Bas");
+			break;
 		}
 	}
 	/**

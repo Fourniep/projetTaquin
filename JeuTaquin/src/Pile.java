@@ -29,8 +29,20 @@ public class Pile implements Atraité {
 	/**
 	 * ajoute une position du jeu de taquin à sommet de la pile
 	 */
-	public void ajouterMaillon (Taquin taquin,int profondeur){
-		Maillon aEmpiler = new Maillon (taquin,profondeur);
+	public void ajouterMaillon (Taquin taquin){
+		Maillon aEmpiler = new Maillon (taquin);
+		if (this.estVide()){
+			sommet = aEmpiler;
+		}else{
+			aEmpiler.suivant = sommet;
+			sommet = aEmpiler;
+		}	
+	}
+	/**
+	 * ajoute une position du jeu de taquin à la pile
+	 */
+	public void ajouterMaillon (Successeur successeur , String chemin){
+		Maillon aEmpiler = new Maillon (successeur,chemin);
 		if (this.estVide()){
 			sommet = aEmpiler;
 		}else{
@@ -45,30 +57,15 @@ public class Pile implements Atraité {
 		return (sommet==null);
 	}
 	/**
-	 * méthode toString pour l'affichage
-	 */
-	public String toString (){
-		String s = "";
-		Maillon pointeur = sommet ;
-		while (pointeur != null){
-			s+= "\n"+pointeur.position ;
-			pointeur = pointeur.suivant;
-		}
-		return s;
-	}
-	public Maillon maillonVictoire () {
-		return sommet;
-	}
-	/**
 	 * retourne le dernier maillon ajouter sans le retirer de la structure
 	 * il est logiquement notre position de victoire dans notre utilisation
 	 */
-	public Taquin positionVictoire () throws Exception{
-		Maillon victoire = this.maillonVictoire();
+	public Maillon positionVictoire () throws Exception{
+		Maillon victoire = this.sommet;
 		if (!victoire.position.testVictoire()){
 			throw new Exception ("Dernier maillon ajouté a Atraité n'est pas la position de victoire !");
 		}else{
-			return victoire.position;
+			return victoire;
 		}
 	}
 	

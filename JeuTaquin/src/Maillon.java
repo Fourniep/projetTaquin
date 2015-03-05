@@ -2,9 +2,13 @@
 public class Maillon {
 	Maillon suivant ;
 	Taquin position ;
-	int profondeur;
-	public Maillon (Taquin position,int profondeur){
+	String mouvements;
+	public Maillon (Taquin position){
 		this.position = position ;
-		this.profondeur = profondeur;
+		this.mouvements ="";
+	}
+	public Maillon (Successeur successeur , String chemin){
+		position = successeur.position;
+		mouvements = chemin+successeur.mouvement.charAt(0);
 	}
 }

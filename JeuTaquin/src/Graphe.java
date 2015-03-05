@@ -4,12 +4,13 @@ import java.util.Iterator;
 
 
 public class Graphe {
-	HashMap<Taquin,Père> Marqué; // double fonction ! : 1) test si une position a déjà été exploré
+	HashMap<Taquin,ArrayList<Successeur>> Marqué; // double fonction ! : 1) test si une position a déjà été exploré
 	// 2) joue le rôle de tableau des père
 	Atraité atraité; // structure qui gère les maillon en attente de traitement
 	long tempsExecution ; // temps d'éxécution pour le parcourt 
 	int nbPositionsParcourus ; // nbDePositionsParcouru lors du parcourt
 	int nbCoups ; // nbCoups joué pour arrivé a la solution 
+	Taquin initial; // position depuis laquel on a lancé le jeu de taquin
 	/**
 	 * Constructeur de graphe
 	 * @param initial la position de départ du jeu de taquin donné par le fichier
@@ -17,6 +18,7 @@ public class Graphe {
 	 * @param algo choix de la structure de donnée pour atraité
 	 */
 	public Graphe (Taquin initial,int delai , String algo) throws Exception {
+		this.initial=initial;
 		switch (algo){
 		case "pile":
 			atraité = new Pile();
@@ -35,32 +37,32 @@ public class Graphe {
 		}
 		 long temps; 
          long start= System.currentTimeMillis();
-        Marqué = new HashMap<Taquin,Père>();
-		Marqué.put(initial,null);
-		atraité.ajouterMaillon(initial,0);
+        Marqué = new HashMap<Taquin,ArrayList<Successeur>>();
+		Marqué.put(initial,initial.positionsSuivantes());
+		atraité.ajouterMaillon(initial);
 		boolean solution = false;
 		while ((!atraité.estVide())&&(!solution)){
 			temps= System.currentTimeMillis()-start;
 			 if(temps>=delai){ 
                  throw new DelaiExecutionException("Délai d'éxécution dépassé");// stoppe l'éxécution du programme si le temps  d'éxécution devient supérieur au délai imposé
 			 }
-			Maillon ET = atraité.retirerMaillon();
-			Taquin enTraitement = ET.position;
-			ArrayList<Successeur> successeurs = enTraitement.positionsSuivantes();
+			Maillon enTraitement = atraité.retirerMaillon();
+			//Taquin enTraitement = ET.position;
+			ArrayList<Successeur> successeurs = Marqué.get(enTraitement.position);
 			Iterator<Successeur> it = successeurs.iterator();
 			while ((it.hasNext())&&(!solution)){
 				Successeur successeurEnTraitement = it.next();
+				Taquin     positionEnTraitement = successeurEnTraitement.position;
 				if (!Marqué.containsKey(successeurEnTraitement.position)){
-					Marqué.put(successeurEnTraitement.position, new Père (enTraitement , successeurEnTraitement.mouvement ));
-					atraité.ajouterMaillon(successeurEnTraitement.position,ET.profondeur+1);
-					solution = successeurEnTraitement.position.testVictoire();
+					Marqué.put(positionEnTraitement,positionEnTraitement.positionsSuivantes() );
+					atraité.ajouterMaillon(successeurEnTraitement,enTraitement.mouvements);
+					solution = positionEnTraitement.testVictoire();
 				}
 			}
 		}
 		nbPositionsParcourus = Marqué.size();
 		tempsExecution = System.currentTimeMillis()-start;
-		
-		nbCoups = atraité.maillonVictoire().profondeur;
+		nbCoups = atraité.positionVictoire().mouvements.length();
 		if (!solution){
 			throw new Exception ("Pas de solution trouvé");
 		}
@@ -71,25 +73,25 @@ public class Graphe {
 	 */
 	public ArrayList<Taquin> récupererSolution () throws Exception{
 		ArrayList<Taquin> résolution = new ArrayList<Taquin>();
-		Taquin enTraitement = this.atraité.positionVictoire();
-		résolution.add(0,enTraitement);
-		Père pèreNoeudEnTraitement = Marqué.get(enTraitement);
-		while (pèreNoeudEnTraitement!=null){
-			résolution.add(0,pèreNoeudEnTraitement.position);
-			enTraitement = résolution.get(0);
-			pèreNoeudEnTraitement = Marqué.get(enTraitement);
+		String chemin = this.atraité.positionVictoire().mouvements;
+		Taquin parcourt = initial.clone();
+		résolution.add(parcourt);
+		for(int i=0 ; i<chemin.length(); i++){
+			parcourt = parcourt.clone();
+			parcourt.permutation(chemin.charAt(i));
+			résolution.add(parcourt);
 		}
 		return résolution;
-		
+			
 	}
+	/**
+	 * affiche la solution 
+	 * @throws Exception
+	 */
 	public void afficherSolution () throws Exception{
 		ArrayList<Taquin> résolution = this.récupererSolution();
 		for (int i=0;i<résolution.size() ; i++){
-			Taquin aAfficher = résolution.get(i);
-			if (Marqué.get(aAfficher)!=null){
-				System.out.println(Marqué.get(aAfficher).mouvement);
-			}
-			System.out.println(aAfficher);
+			System.out.println(résolution.get(i));
 		}
 	}	
 	
