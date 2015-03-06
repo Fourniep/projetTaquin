@@ -20,6 +20,25 @@ public class ProjetTaquin {
 			}	
 		
 	}
+	public static void afficherSolutionHTML (Graphe g)throws Exception{
+		ArrayList<Taquin>solution = g.récupererSolution();
+		File f = new File ("TaquinDeplacement.php");
+		f.delete();
+		FileWriter fw = new FileWriter(f);
+		fw.write("<?php \n");
+		fw.write("$hauteur="+g.initial.hauteur+";\n");
+		fw.write("$largeur="+g.initial.largeur+";\n");
+		fw.write("$array=array(");
+		for(int i=0; i<solution.size();i++){
+			if(i==solution.size()-1){
+				fw.write("'"+solution.get(i)+"',");
+			} else {
+				fw.write("'"+solution.get(i)+"'");
+			}
+			}
+		fw.write(");\n?>");
+		fw.close();
+		}
 	/**
 	 * affiche la solution 
 	 * @param g graphe parcouru
@@ -216,6 +235,15 @@ public class ProjetTaquin {
 				
 			}
 			break;	
+		case ("-anime"):
+			if (algo.contains(args[2])){
+				try{
+					Graphe g = ParcourtDuGraphe (args[1],args[2],args[3]);
+					afficherSolutionHTML(g);
+				}catch(Exception e){
+					System.out.println(e);
+				}
+			}
 		}
 
 	}
